@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
+import axios from "axios";
 import { ReactComponent as OverviewIcon } from "../icons/overview.svg";
 import { ReactComponent as ShoppingBagIcon } from "../icons/shopping-bag.svg";
 import { ReactComponent as GraphIcon } from "../icons/graph.svg";
@@ -30,25 +31,55 @@ import useForm from "../lib/useForm";
 import validate from "../validators/leadFormValidator";
 import toast, { Toaster } from "react-hot-toast";
 import Badge from "../components/badges/Badge";
-// import HomePage from "./components/Containner";
+import { useEffect } from "react";
 
 const INITIAL_FORM = {
 	fullname: "",
+	comment: "",
 	email: "",
 	phone: "",
+	statusId: 1,
 };
 
 export default function Dashboard() {
 	const [formSchema, setFormSchema] = useState(INITIAL_FORM);
 	const [showDialog, setShowDialog] = useState(false);
+	const [leadsList, setLeadsList] = useState([]);
+
 	const close = () => setShowDialog(false);
 
-	const handleModalSubmit = (e) => {
-		console.log("faut pas faut pas");
-		setFormSchema(INITIAL_FORM);
-		close();
-		notify();
+	const submit = async () => {
+		try {
+			return await axios.post(
+				"http://localhost:1337/api/v1/leads",
+				formSchema
+			);
+		} catch (e) {}
 	};
+
+	const handleModalSubmit = async () => {
+		const res = submit();
+
+		toast.promise(res, {
+			loading: "Loading...",
+			success: "Everything went smoothly.",
+			error: "Uh oh, there was an error!",
+		});
+
+		const data = await res;
+
+		setFormSchema(INITIAL_FORM);
+
+		try {
+			const {
+				data: { results },
+			} = await axios.get("http://localhost:1337/api/v1/leads");
+			setLeadsList([...results]);
+		} catch (e) {}
+
+		close();
+	};
+
 	const {
 		handleSubmit,
 		handleChange: handleFormChange,
@@ -56,76 +87,34 @@ export default function Dashboard() {
 		errors,
 	} = useForm(handleModalSubmit, validate, formSchema, setFormSchema);
 
-	const notify = () =>
-		toast("Successfully toasted! 🥳", {
-			icon: "🚀",
-			position: "top-center",
-			style: {
-				borderRadius: "10px",
-				background: "#343434",
-				color: "#fff",
-			},
-		});
 	const sideList = [
 		[
-			{ label: "Overview", icon: OverviewIcon },
-			{ label: "Products", icon: ShoppingBagIcon },
-			{ label: "Analytics", icon: GraphIcon },
-			{ label: "Schedule", icon: CalendarIcon },
-			{ label: "Payout", icon: WalletIcon },
-			{ label: "Statements", icon: FileIcon },
+			{ label: "Overview", icon: OverviewIcon, path: "/" },
+			{ label: "Products", icon: ShoppingBagIcon, path: "/" },
+			{ label: "Analytics", icon: GraphIcon, path: "/" },
+			{ label: "Schedule", icon: CalendarIcon, path: "/" },
+			{ label: "Payout", icon: WalletIcon, path: "/" },
+			{ label: "Statements", icon: FileIcon, path: "/" },
 		],
 		[
-			{ label: "Help", icon: ChatIcon },
-			{ label: "Settings", icon: SettingsIcon },
-			{ label: "Logout", icon: LogoutIcon },
+			{ label: "Help", icon: ChatIcon, path: "/" },
+			{ label: "Settings", icon: SettingsIcon, path: "/" },
+			{ label: "Logout", icon: LogoutIcon, path: "/logout" },
 		],
 	];
 
-	const usersList = [
-		{
-			id: 1,
-			fullname: "Ali Haloua",
-			email: "ali@about.ma",
-			phone: "066702742",
-			comment:
-				"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
-			status: "active",
-		},
-		{
-			id: 2,
-			fullname: "Ali Haloua",
-			email: "ali@about.ma",
-			phone: "066702742",
-			comment:
-				"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
-			status: "inactive",
-		},
-		{
-			id: 3,
-			fullname: "Ali Haloua",
-			email: "ali@about.ma",
-			phone: "066702742",
-			comment: "nothing to say",
-			status: "active",
-		},
-		{
-			id: 4,
-			fullname: "Ali Haloua",
-			email: "ali@about.ma",
-			phone: "066702742",
-			comment: "nothing to say",
-			status: "active",
-		},
-		{
-			id: 5,
-			fullname: "Ali Haloua",
-			email: "ali@about.ma",
-			phone: "066702742",
-			comment: "nothing to say",
-			status: "inactive",
-		},
-	];
+	useEffect(() => {
+		const fetchLeads = async () => {
+			try {
+				const {
+					data: { results },
+				} = await axios.get("http://localhost:1337/api/v1/leads");
+				setLeadsList([...results]);
+			} catch (e) {}
+		};
+		fetchLeads();
+	}, []);
+
 	return (
 		<div className="w-full min-h-screen font-sans text-gray-900 bg-gray-50 flex">
 			<aside className="py-6 px-10 w-64 border-r border-gray-200">
@@ -136,7 +125,7 @@ export default function Dashboard() {
 					<ul key={i} className="flex flex-col gap-y-6 pt-20">
 						{el.map((_el, _i) => (
 							<NavLink
-								to="/"
+								to={_el.path}
 								className="flex gap-x-4 items-start py-2 text-gray-500 hover:text-teal-600 group"
 								key={_i}
 							>
@@ -268,6 +257,27 @@ export default function Dashboard() {
 								)}
 							</label>
 						</div>
+						<div className="mb-5">
+							<label className="block space-y-2">
+								<span className="block text-xs font-bold leading-4 tracking-wide uppercase text-gray-600">
+									Comment
+								</span>
+
+								<input
+									onChange={handleFormChange}
+									value={values.comment}
+									placeholder="comment"
+									type="text"
+									name="comment"
+									className="w-full border border-gray-100 px-3 py-2 rounded-lg shadow-sm focus:outline-none focus:border-teal-200 focus:ring-1 focus:ring-teal-200"
+								/>
+								{errors?.comment && (
+									<span className="text-xs text-red-500">
+										{errors?.comment}
+									</span>
+								)}
+							</label>
+						</div>
 						<div className="sm:flex sm:flex-row-reverse">
 							<span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
 								<button
@@ -316,7 +326,7 @@ export default function Dashboard() {
 							</tr>
 						</thead>
 						<tbody className=" divide-y divide-gray-100 ">
-							{usersList?.map((el) => (
+							{leadsList?.map((el) => (
 								<tr
 									className="odd:bg-white even:bg-gray-50"
 									key={el.id}
@@ -338,9 +348,9 @@ export default function Dashboard() {
 									</td>
 									<td className="p-3 text-sm text-gray-700 text-center whitespace-nowrap">
 										<Badge
-											label={el.status}
+											label={el.status?.name}
 											labelColor={
-												el.status === "active"
+												el.status?.name === "active"
 													? "emerald"
 													: "red"
 											}

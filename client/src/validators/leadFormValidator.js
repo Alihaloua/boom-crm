@@ -22,12 +22,20 @@ export default function validate(values) {
 		errors.email = "Email address is not valid.";
 	}
 
+	// Validate Phone
 	if (!values.phone || values.phone.trim() === "") {
 		errors.phone = "Phone is required field.";
 	} else if (!/^[0-9 +-]+$/.test(values.phone)) {
 		errors.phone = "Use only numeric characters.";
 	} else if (values.phone.length > 30) {
-		errors.phone = "Biography must be less than 30 characters.";
+		errors.phone = "Phone must be less than 30 characters.";
+	}
+
+	// Validate Comment
+	if (!values.comment || values.comment.trim() === "") {
+		errors.comment = "Comment is required field.";
+	} else if (values.comment.length > 50) {
+		errors.comment = "Comment must be less than 50 characters.";
 	}
 
 	return errors;

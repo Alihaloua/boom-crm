@@ -1,15 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-// import { IsLoggedfn } from "../context/AuthContext";
-// import { getInstance } from "../shared/Utils";
-// import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
-import useAuth from "../lib/useAuth";
 
 export default function Login() {
-	const authContext = useAuth();
-
 	const navigate = useNavigate();
 	const location = useLocation();
 	const from = location?.state?.from?.pathname || "/";
@@ -19,7 +14,7 @@ export default function Login() {
 		password: "",
 	});
 
-	// const authContext = useContext(AuthContext);
+	const { setAuth } = useContext(AuthContext);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -55,12 +50,12 @@ export default function Login() {
 
 			localStorage.setItem("token", results?.accessToken);
 
-			authContext.setAuth((oldVals) => ({
-				...oldVals,
+			setAuth(() => ({
 				token: results?.accessToken,
 				user: results?.user,
 			}));
-			navigate("/", { replace: true });
+
+			navigate(from, { replace: true });
 		} catch (e) {}
 	};
 

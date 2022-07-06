@@ -2,9 +2,9 @@ import React from "react";
 import { Route, Routes, Outlet } from "react-router-dom";
 import AuthProvider, { RequireAuth } from "./context/AuthContext";
 
-// import PrivateRoute from "./routes/PrivateRoute";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
+import Logout from "./components/Logout";
 
 function App() {
 	return (
@@ -12,6 +12,7 @@ function App() {
 			<Route path="/" element={<Outlet />}>
 				{/* public Routes */}
 				<Route path="auth" element={<Login />} />
+				<Route path="logout" element={<Logout />} />
 
 				{/* protected Routes */}
 				<Route element={<RequireAuth />}>

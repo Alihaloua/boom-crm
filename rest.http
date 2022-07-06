@@ -3,7 +3,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NTY0MDc1M
 
 ###
 POST http://localhost:1337/api/v1/users/token
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NTY0MDc1MTUsImF1ZCI6IjciLCJpc3MiOiJCb21tZXJzIn0.9p2P_b1rbgkkmuJ5gzhuNGnD-16jjSflezmkWv-bgSE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkXVCJ9.eyJpYXQiOjE2NTY0MDc1MTUsImF1ZCI6IjciLCJpc3MiOiJCb21tZXJzIn0.9p2P_b1rbgkkmuJ5gzhuNGnD-16jjSflezmkWv-bgSE
 
 
 ### Login page (POST)
