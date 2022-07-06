@@ -1,0 +1,188 @@
+GET http://localhost:1337/api/v1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NTY0MDc1MTUsImF1ZCI6IjciLCJpc3MiOiJCb21tZXJzIn0.9p2P_b1rbgkkmuJ5gzhuNGnD-16jjSflezmkWv-bgSE
+
+###
+POST http://localhost:1337/api/v1/users/token
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NTY0MDc1MTUsImF1ZCI6IjciLCJpc3MiOiJCb21tZXJzIn0.9p2P_b1rbgkkmuJ5gzhuNGnD-16jjSflezmkWv-bgSE
+
+
+### Login page (POST)
+POST http://localhost:1337/api/v1/users/login
+Content-Type: application/json
+
+{
+	"email": "furelise@art.co",
+	"password": "furelise"
+}
+
+
+### Register page (POST) (add user)
+POST http://localhost:1337/api/v1/users/register
+Content-Type: application/json
+
+{
+	"fullname": "furelise",
+	"email": "furelise@art.co",
+	"phone": "123-456-789",
+	"password": "furelise",
+	"roleId": 1
+}
+
+### <== Rol Part ==>
+### `Roles` Get All
+GET http://localhost:1337/api/v1/roles
+
+
+### `Role` Get One
+GET http://localhost:1337/api/v1/roles/1
+
+
+### Add `Role` 
+POST http://localhost:1337/api/v1/roles
+Content-Type: application/json
+
+{
+	"name": "commercial"
+}
+
+### Edit `Role` 
+PUT http://localhost:1337/api/v1/roles/2
+Content-Type: application/json
+
+{
+	"name": "support",
+}
+
+### `Role` Delete
+DELETE http://localhost:1337/api/v1/roles/1
+
+
+### <== User Part ==>
+### `User` Get All
+GET http://localhost:1337/api/v1/users
+
+
+### `User` Get One
+GET http://localhost:1337/api/v1/users/1
+
+
+### Add `User` 
+POST http://localhost:1337/api/v1/users
+Content-Type: application/json
+
+{
+	"fullname": "Jhon Doe",
+	"email": "ali@do3.com",
+	"password": "qwertz",
+	"phone": "0123-456-789",
+
+	"roleId": 1
+}
+
+### Edit `User` 
+PUT http://localhost:1337/api/v1/users/2
+Content-Type: application/json
+
+{
+	"fullname": "Jhon Do3"
+}
+
+### `User` Delete
+DELETE http://localhost:1337/api/v1/users/1
+
+
+
+### <== Status Part ==>
+### `Status` Get All
+GET http://localhost:1337/api/v1/status
+
+
+### `Status` Get One
+GET http://localhost:1337/api/v1/status/1
+
+
+### Add `Status` 
+POST http://localhost:1337/api/v1/status
+Content-Type: application/json
+
+{
+	"name": "incative"
+}
+
+### Edit `Status` 
+PUT http://localhost:1337/api/v1/status/2
+Content-Type: application/json
+
+{
+	"name": "Jhon Do3"
+}
+
+
+### `Status` Delete
+DELETE http://localhost:1337/api/v1/status/1
+
+
+
+### <== Leads Part ==>
+### `Leads` Get All
+GET http://localhost:1337/api/v1/leads
+
+
+### `Leads` Get One
+GET http://localhost:1337/api/v1/leads/1
+
+
+### Add `Leads` 
+POST http://localhost:1337/api/v1/leads
+Content-Type: application/json
+
+{
+	"fullname": "incative",
+	"comment": "incative",
+	"email": "emai@ami,com",
+	"phone": "incative",
+	"statusId": 1
+}
+
+### Edit `Leads` 
+PUT http://localhost:1337/api/v1/leads/1
+Content-Type: application/json
+
+{
+	"fullname": "active",
+	"comment": "active",
+	"email": "incative@jo",
+	"phone": "active",
+	"statusId": 1
+}
+
+
+### `Leads` Delete
+DELETE http://localhost:1337/api/v1/leads/1
+
+
+
+### <== Log Part ==>
+### `Log` Get All
+GET http://localhost:1337/api/v1/logs
+
+
+### `Log` Get One
+GET http://localhost:1337/api/v1/logs/1
+
+
+### Add `Log` 
+POST http://localhost:1337/api/v1/logs
+Content-Type: application/json
+
+{
+	"fullname": "incative",
+	"comment": "incative",
+	"email": "emai@ami,com",
+	"phone": "incative",
+	"statusId": 1
+}
+
+
+### `Log` Delete
+DELETE http://localhost:1337/api/v1/logs/1

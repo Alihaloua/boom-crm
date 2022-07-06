@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+	provider = "prisma-client-js"
+	previewFeatures	= ["referentialIntegrity"]
+}
+
+datasource db {
+	provider				= "mysql"
+	url      				= env("DATABASE_URL")
+	shadowDatabaseUrl		= env("SHADOW_DATABASE_URL")
+	referentialIntegrity	= "prisma"
+}
+
+
+model User {
+	@@map("users")
+	id					Int			@id @default(autoincrement())
+	fullname			String?		@db.VarChar(255)
+	email				String?		@db.VarChar(255) @unique 
+	emailVerified 		DateTime?
+	password			String?		@db.VarChar(255)
+	phone				String?		@db.VarChar(255)
+
+	role				Role?		@relation(fields: [roleId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+	roleId				Int?		@map("role_id")
+
+	createdAt			DateTime	@default(now()) @map("created_at")
+	updatedAt			DateTime	@updatedAt		@map("updated_at")
+	deletedAt			DateTime?	@db.DateTime(0)	@map("deleted_at")
+
+	@@index([id, email])
+}
+
+model Lead {
+	@@map("leads")
+	id					Int			@id @default(autoincrement())
+	fullname			String?		@db.VarChar(255)
+	comment				String?		@db.Text
+	email				String?		@db.VarChar(255) @unique
+	phone				String?		@db.VarChar(255)
+
+	status				Status?		@relation(fields: [statusId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+	statusId			Int?		@map("status_id")
+
+	createdAt			DateTime	@default(now()) @map("created_at")
+	updatedAt			DateTime	@updatedAt		@map("updated_at")
+	deletedAt			DateTime?	@db.DateTime(0)	@map("deleted_at")
+
+	@@index([id, email, statusId])
+}
+
+
+model Status {
+	@@map("status")
+	id					Int			@id @default(autoincrement())
+	name				String		@db.VarChar(255)
+
+	createdAt			DateTime	@default(now()) @map("created_at")
+	updatedAt			DateTime	@updatedAt		@map("updated_at")
+	deletedAt			DateTime?	@db.DateTime(0)	@map("deleted_at")
+
+	leads				Lead[]
+	@@index([id])
+}
+
+model Role {
+	@@map("roles")
+	id					Int			@id @default(autoincrement())
+	name				String		@db.VarChar(255)
+
+	createdAt			DateTime	@default(now()) @map("created_at")
+	updatedAt			DateTime	@updatedAt		@map("updated_at")
+	deletedAt			DateTime?	@db.DateTime(0)	@map("deleted_at")
+
+	users				User[]
+}
+
+model ActivityLog {
+	@@map("activity_logs")
+	id					Int			@id @default(autoincrement())
+
+	action				Action?
+	description			String?		@db.Text
+
+	properties			Json?
+
+	targetId			Int?		@map("target_id")
+	targetModel			String?		@map("target_model")
+
+	affectedBy			Int?		@map("affected_by")
+	affectedByModel		String?		@map("affected_by_model")
+
+	createdAt			DateTime	@default(now()) @map("created_at")
+	deletedAt			DateTime?	@db.DateTime(0)	@map("deleted_at")
+}
+
+enum Action {
+	ADD
+	UPDATE
+	DELETE
+}
